@@ -16,6 +16,5 @@ public class CreateTicketRequest {
 
     private String description;
 
-    @NotNull(message = "Reporter ID is required")
     private Long reporterId;
 }

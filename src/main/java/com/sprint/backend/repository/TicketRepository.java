@@ -14,6 +14,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
      * Fetch all tickets with their reporter but without joining photos.
      * This keeps the list query lightweight (no BYTEA loaded).
      */
-    @Query("SELECT t FROM Ticket t JOIN FETCH t.reporter ORDER BY t.createdAt DESC")
+    @Query("SELECT t FROM Ticket t ORDER BY t.id ASC")
     List<Ticket> findAllWithReporter();
 }

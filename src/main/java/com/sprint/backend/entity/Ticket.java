@@ -18,10 +18,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "reporter_id", nullable = false)
-    private User reporter;
-
     @Column(nullable = false)
     private String title;
 

@@ -30,8 +30,6 @@ public class TicketSummaryDto {
                 .title(t.getTitle())
                 .description(t.getDescription())
                 .status(t.getStatus().name())
-                .reporterName(t.getReporter().getName())
-                .reporterId(t.getReporter().getId())
                 .hasPhoto(hasPhoto)
                 .createdAt(t.getCreatedAt())
                 .updatedAt(t.getUpdatedAt())

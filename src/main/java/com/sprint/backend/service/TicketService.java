@@ -35,12 +35,11 @@ public class TicketService {
     public TicketSummaryDto createTicket(CreateTicketRequest req, MultipartFile image)
             throws IOException {
 
-        User reporter = userRepository.findById(req.getReporterId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, "Reporter not found: " + req.getReporterId()));
+        if (req.getReporterId() != null) {
+            userRepository.findById(req.getReporterId()).ifPresent(u -> {});
+        }
 
         Ticket ticket = Ticket.builder()
-                .reporter(reporter)
                 .title(req.getTitle())
                 .description(req.getDescription())
                 .status(Ticket.Status.OPEN)

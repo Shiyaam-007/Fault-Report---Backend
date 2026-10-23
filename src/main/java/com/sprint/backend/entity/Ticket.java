@@ -30,6 +30,10 @@ public class Ticket {
     private Status status = Status.OPEN;
 
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "reporter_id")
+    private User reporter;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -44,3 +48,4 @@ public class Ticket {
 
     public enum Status { OPEN, IN_PROGRESS, RESOLVED }
 }
+

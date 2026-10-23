@@ -12,6 +12,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String username;
+
+    @Column
+    private String password;
+
     @Column(nullable = false)
     private String name;
 
@@ -21,3 +27,4 @@ public class User {
 
     public enum Role { STUDENT, ADMIN }
 }
+

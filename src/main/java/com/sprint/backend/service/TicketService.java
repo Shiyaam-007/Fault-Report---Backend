@@ -35,13 +35,15 @@ public class TicketService {
     public TicketSummaryDto createTicket(CreateTicketRequest req, MultipartFile image)
             throws IOException {
 
+        User reporter = null;
         if (req.getReporterId() != null) {
-            userRepository.findById(req.getReporterId()).ifPresent(u -> {});
+            reporter = userRepository.findById(req.getReporterId()).orElse(null);
         }
 
         Ticket ticket = Ticket.builder()
                 .title(req.getTitle())
                 .description(req.getDescription())
+                .reporter(reporter)
                 .status(Ticket.Status.OPEN)
                 .build();
 
@@ -63,15 +65,24 @@ public class TicketService {
     }
 
     // ------------------------------------------------------------------
-    // List all tickets (lightweight — no BYTEA)
+    // List tickets (all or by reporterId)
     // ------------------------------------------------------------------
     @Transactional(readOnly = true)
-    public List<TicketSummaryDto> getAllTickets() {
-        return ticketRepository.findAllWithReporter()
-                .stream()
+    public List<TicketSummaryDto> getTickets(Long reporterId) {
+        List<Ticket> tickets = (reporterId != null)
+                ? ticketRepository.findByReporterId(reporterId)
+                : ticketRepository.findAllWithReporter();
+
+        return tickets.stream()
                 .map(t -> TicketSummaryDto.from(t, photoRepository.existsByTicketId(t.getId())))
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<TicketSummaryDto> getAllTickets() {
+        return getTickets(null);
+    }
+
 
     // ------------------------------------------------------------------
     // Get raw photo bytes for a ticket

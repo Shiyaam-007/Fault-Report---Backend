@@ -16,17 +16,77 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() == 0) {
-            log.info("No users found in database. Seeding default student and admin users...");
-            userRepository.save(User.builder()
-                    .name("Alice Student")
-                    .role(User.Role.STUDENT)
-                    .build());
-            userRepository.save(User.builder()
-                    .name("Bob Admin")
-                    .role(User.Role.ADMIN)
-                    .build());
-            log.info("Default users seeded successfully.");
-        }
+        log.info("Checking users and credentials in database...");
+
+        // Ensure default student user exists with credentials
+        userRepository.findByUsernameIgnoreCase("student").ifPresentOrElse(
+                student -> {
+                    if (student.getPassword() == null || student.getPassword().isBlank()) {
+                        student.setPassword("student123");
+                        userRepository.save(student);
+                        log.info("Updated password for student user.");
+                    }
+                },
+                () -> {
+                    // Check if an existing student user has no username
+                    userRepository.findAll().stream()
+                            .filter(u -> u.getRole() == User.Role.STUDENT && (u.getUsername() == null || u.getUsername().isBlank()))
+                            .findFirst()
+                            .ifPresentOrElse(
+                                    u -> {
+                                        u.setUsername("student");
+                                        u.setPassword("student123");
+                                        userRepository.save(u);
+                                        log.info("Configured credentials for existing student user {}.", u.getName());
+                                    },
+                                    () -> {
+                                        userRepository.save(User.builder()
+                                                .username("student")
+                                                .password("student123")
+                                                .name("Alice Student")
+                                                .role(User.Role.STUDENT)
+                                                .build());
+                                        log.info("Seeded default student user: student / student123");
+                                    }
+                            );
+                }
+        );
+
+        // Ensure default admin user exists with credentials
+        userRepository.findByUsernameIgnoreCase("admin").ifPresentOrElse(
+                admin -> {
+                    if (admin.getPassword() == null || admin.getPassword().isBlank()) {
+                        admin.setPassword("admin123");
+                        userRepository.save(admin);
+                        log.info("Updated password for admin user.");
+                    }
+                },
+                () -> {
+                    // Check if an existing admin user has no username
+                    userRepository.findAll().stream()
+                            .filter(u -> u.getRole() == User.Role.ADMIN && (u.getUsername() == null || u.getUsername().isBlank()))
+                            .findFirst()
+                            .ifPresentOrElse(
+                                    u -> {
+                                        u.setUsername("admin");
+                                        u.setPassword("admin123");
+                                        userRepository.save(u);
+                                        log.info("Configured credentials for existing admin user {}.", u.getName());
+                                    },
+                                    () -> {
+                                        userRepository.save(User.builder()
+                                                .username("admin")
+                                                .password("admin123")
+                                                .name("Bob Admin")
+                                                .role(User.Role.ADMIN)
+                                                .build());
+                                        log.info("Seeded default admin user: admin / admin123");
+                                    }
+                            );
+                }
+        );
+
+        log.info("Default users initialization completed.");
     }
+
 }

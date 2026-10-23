@@ -39,13 +39,14 @@ public class TicketController {
     }
 
     /**
-     * GET /api/tickets
-     * Returns lightweight ticket summaries — no image binary data.
+     * GET /api/tickets?reporterId={id}
+     * Returns lightweight ticket summaries — optionally filtered by reporterId.
      */
     @GetMapping
-    public ResponseEntity<List<TicketSummaryDto>> getAllTickets() {
-        return ResponseEntity.ok(ticketService.getAllTickets());
+    public ResponseEntity<List<TicketSummaryDto>> getTickets(@RequestParam(required = false) Long reporterId) {
+        return ResponseEntity.ok(ticketService.getTickets(reporterId));
     }
+
 
     /**
      * GET /api/tickets/{id}/photo

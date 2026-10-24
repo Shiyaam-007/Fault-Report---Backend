@@ -43,7 +43,7 @@ public class DataInitializer implements CommandLineRunner {
                                         userRepository.save(User.builder()
                                                 .username("student")
                                                 .password("student123")
-                                                .name("Alice Student")
+                                                .name("Student")
                                                 .role(User.Role.STUDENT)
                                                 .build());
                                         log.info("Seeded default student user: student / student123");
@@ -77,7 +77,7 @@ public class DataInitializer implements CommandLineRunner {
                                         userRepository.save(User.builder()
                                                 .username("admin")
                                                 .password("admin123")
-                                                .name("Bob Admin")
+                                                .name("Admin")
                                                 .role(User.Role.ADMIN)
                                                 .build());
                                         log.info("Seeded default admin user: admin / admin123");
